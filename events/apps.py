@@ -1,4 +1,9 @@
+import logging
+
 from django.apps import AppConfig
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class EventsConfig(AppConfig):
@@ -6,4 +11,5 @@ class EventsConfig(AppConfig):
     name = "events"
 
     def ready(self):
-        pass
+        import events.signals  # fmt: skip
+        logger.info(type(events.signals))
