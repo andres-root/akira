@@ -5,9 +5,9 @@ class CalendarService:
     def __init__(self):
         self.calendar_agent = CalendarAgent()
 
-    def parse_event(self) -> CalendarAgentResponse:
-        event = self.calendar_agent.run()
+    def parse_event(self, prompt: str) -> CalendarAgentResponse:
+        event = self.calendar_agent.run(prompt)
         if not event:
             raise ValueError("Invalid event response")
-        print(event)
+        print("DEBUG: ", event)
         return event

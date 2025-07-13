@@ -18,5 +18,7 @@ class CalendarAgent(BaseAgent):
         self.model_adapter = LangchainAdapter()
         self.prompt_name = "calendar-data-extractor"
 
-    def run(self) -> CalendarAgentResponse | str | dict:
-        return self.model_adapter.invoke(self.prompt_name, response_model=CalendarAgentResponse)
+    def run(self, prompt: str) -> CalendarAgentResponse | str | dict:
+        return self.model_adapter.invoke(
+            self.prompt_name, response_model=CalendarAgentResponse, params={"schedule_message": prompt}
+        )

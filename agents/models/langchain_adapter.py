@@ -2,7 +2,6 @@ import logging
 
 from django.conf import settings
 from langchain_anthropic import ChatAnthropic
-from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
 from langsmith import Client
 from pydantic import BaseModel
@@ -25,13 +24,13 @@ class LangchainAdapter:
             model="gpt-4o-mini",
             temperature=1,
         )
-        self.model = self.anthropic
+        self.model = self.openai
 
-    def invoke(self, prompt_name: str, response_model: BaseModel) -> dict | BaseModel:
+    def invoke(self, prompt_name: str, response_model: BaseModel, params: dict) -> dict | BaseModel:
         try:
             prompt = self.langsmith_client.pull_prompt(prompt_name)
-            chain = prompt | self.model | StrOutputParser(pydantic_object=response_model)
-            result = chain.invoke()
+            chain = prompt | self.model
+            result = chain.invoke(params)
             return result
         except Exception as e:
             logger.error(f"Error invoking model: {e}")

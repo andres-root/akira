@@ -4,12 +4,13 @@ from django.db import transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from agents.calendar_agent import CalendarAgentResponse
 from agents.services import CalendarService
 from events.models import Event, ScheduleRequest, Status
 from events.utils import parse_datetime
 
 # Configure logging
-logging.basicConfig(level=logging.DEBUG, format="%(levelname)s - %(message)s")
+# logging.basicConfig(level=logging.DEBUG, format="%(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 # Initialize the calendar service
@@ -24,7 +25,8 @@ def create_event(sender, instance, created, **kwargs):
             instance.status = Status.PROCESSING
             instance.save()
             # Parse the event
-            event = calendar_service.parse_event(instance.prompt)
+            response = calendar_service.parse_event(instance.prompt)
+            event = CalendarAgentResponse(**response)
             # Create the event
             with transaction.atomic():
                 event = Event.objects.create(
