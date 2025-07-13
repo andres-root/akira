@@ -1,4 +1,7 @@
+from typing import Optional
+
 from anthropic import Anthropic
+from pydantic import BaseModel
 
 
 class AnthropicClaude:
@@ -10,7 +13,10 @@ class AnthropicClaude:
         self.temperature = 1
         self.system_prompt = system_prompt if system_prompt else "You are a helpful assistant."
 
-    def run(self, prompt: str) -> str:
+    def run(self, prompt: str, response_format: Optional[BaseModel] = None) -> str:
+        if not prompt:
+            raise ValueError("Prompt is required")
+
         response = self.client.messages.create(
             model=self.model,
             messages=[

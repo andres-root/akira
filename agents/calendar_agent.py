@@ -1,8 +1,7 @@
-from django.conf import settings
 from pydantic import BaseModel
 
 from agents.basic_agent import BaseAgent
-from agents.models import AnthropicClaude, OpenAIGPT
+from agents.models.langchain_adapter import LangchainAdapter
 
 
 class CalendarAgentResponse(BaseModel):
@@ -16,17 +15,8 @@ class CalendarAgentResponse(BaseModel):
 
 class CalendarAgent(BaseAgent):
     def __init__(self):
-        self.claude = AnthropicClaude(
-            api_key=settings.ANTHROPIC_API_KEY,
-            model="claude-3-5-haiku-20241022",
-            system_prompt="You are a helpful assistant that can extract the name, a short description of max 248 characters, date, participants, and location from a calendar event in a given text.",
-        )
-        self.gpt = OpenAIGPT(
-            api_key=settings.OPENAI_API_KEY,
-            model_name="gpt-4o-mini",
-            system_prompt="You are a helpful assistant that can extract the name, a short description of max 248 characters, date, participants, and location from a calendar event in a given text.",
-        )
-        self.model = self.claude
+        self.model_adapter = LangchainAdapter()
+        self.prompt_name = "calendar-data-extractor"
 
-    def run(self, prompt: str) -> CalendarAgentResponse | str:
-        return self.model.run(prompt, CalendarAgentResponse)
+    def run(self) -> CalendarAgentResponse | str | dict:
+        return self.model_adapter.invoke(self.prompt_name, response_model=CalendarAgentResponse)

@@ -8,8 +8,11 @@ from agents.services import CalendarService
 from events.models import Event, ScheduleRequest, Status
 from events.utils import parse_datetime
 
+# Configure logging
+logging.basicConfig(level=logging.DEBUG, format="%(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+
+# Initialize the calendar service
 calendar_service = CalendarService()
 
 
@@ -39,6 +42,5 @@ def create_event(sender, instance, created, **kwargs):
                 logger.info(f"Event created: {event.title}")
         except Exception as e:
             logger.error(f"Error creating event: {e}")
-            print("error: ", str(e))
             instance.status = Status.FAILED
             instance.save()

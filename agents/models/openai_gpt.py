@@ -13,6 +13,9 @@ class OpenAIGPT:
         self.system_prompt = system_prompt if system_prompt else "You are a helpful assistant."
 
     def run(self, prompt: str, response_format: Optional[BaseModel] = None) -> str | BaseModel:
+        if not prompt:
+            raise ValueError("Prompt is required")
+
         if response_format:
             return self.client.chat.completions.parse(
                 model=self.model,

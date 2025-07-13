@@ -9,5 +9,5 @@ class BaseAgentResponse(BaseModel):
 
 class BaseAgent(ABC):
     @abstractmethod
-    def run(self, prompt: str):
+    def run(self):
         raise NotImplementedError("Subclasses must implement this method")
