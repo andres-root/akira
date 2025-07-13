@@ -6,4 +6,7 @@ class EventsConfig(AppConfig):
     name = "events"
 
     def ready(self):
+        # fmt: off
         pass
+
+        # fmt: on
